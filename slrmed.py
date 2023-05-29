@@ -1,37 +1,53 @@
 import streamlit as st
 import pandas as pd
-from sklearn.cluster import KMeans
-import math
+import numpy as np
 import folium
-from streamlit_folium import folium_static
+import folium_static
+import math
+from sklearn.cluster import KMeans
 
 # Wczytanie danych z pliku CSV
-@st.cache
-def load_data():
-    return pd.read_csv('dane1.csv')
-
-data = load_data()
-
-st.title("Przykładowa aplikacja Streamlit")
+df = pd.read_csv('dane1.csv')
 
 # Liczba rekordów zaczytanych z pliku CSV
-liczba_rekordow = len(data)
+liczba_rekordow = len(df)
 st.write(f"Liczba rekordów zaczytanych z pliku CSV: {liczba_rekordow}")
 
-# Definicja wag dla kryteriów selekcji
-weights = st.sidebar.slider('Wagi dla kryteriów selekcji', min_value=0.0, max_value=1.0, value=0.3, step=0.05)
+# Definicja wag dla kryteriów selekcji (większe wagi oznaczają większe znaczenie)
+weights = {
+    'Populacja': 0.3,
+    'Liczba_SOR_w_OCH': 0.05,
+    'l_karetek_p': 0.2,
+    'l_karetek_s': 0.05,
+    'l_wyjazdow_PRM': 0.2,
+    'l_obs_pacjetnow_PRM': 0.05,
+    'Liczba_strazakow_na_zm': 0.05,
+    'liczba_zdarzen': 0.3,
+    'liczba_rat_PRM': 0.2,
+    'Liczba_pojazdow': 0.05,
+    'pow_ob_ch': 0.025,
+    'pow_ob_ch_km_kw': 0.025,
+    'Liczba_dyspozytorni': 0.025
+}
 
-# Miejsce na resztę kodu...
+# Wyświetlenie aktualnie wykorzystywanych wag
+st.write("Obecnie wykorzystywane wagi:")
+st.write(weights)
 
 # Funkcja do zmiany wag
 def zmien_wagi():
-    st.write("Zmiana wag kryteriów:")
+    st.sidebar.write("Zmiana wag kryteriów:")
     for kryterium, waga in weights.items():
         waga = st.sidebar.slider(kryterium, min_value=0.0, max_value=1.0, value=waga, step=0.05)
         weights[kryterium] = waga
     st.write("Zaktualizowano wagi kryteriów!")
 
 zmien_wagi()
+
+# Reszta kodu...
+
+# Miejsce na resztę kodu...
+
 
 # Obliczenie wskaźnika dla każdej jednostki na podstawie wag kryteriów
 ratios = {}
